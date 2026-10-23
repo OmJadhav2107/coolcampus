@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CoolCampus | Heat & Shade Explorer</title>
+<style>
+:root{--forest:#174b3a;--green:#2b795b;--lime:#c7ef8b;--cream:#f6f5ee;--ink:#1d3029;--muted:#68786f;--line:#dce5dc;--orange:#ef9858}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,Segoe UI,Arial,sans-serif}
+header{background:linear-gradient(120deg,#123c30,#287454);color:white;padding:24px max(18px,calc((100% - 1120px)/2)) 30px}
+.brand{font-weight:900;letter-spacing:.5px}.brand span{color:var(--lime)}
+.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:26px;align-items:center;max-width:1120px;margin:28px auto 0}
+.eyebrow{font-size:.78rem;letter-spacing:2px;font-weight:800;color:var(--lime)}h1{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1;margin:12px 0}.hero p{color:#e0efe6;line-height:1.6;max-width:650px}
+.hero-card{background:#ffffff12;border:1px solid #ffffff30;border-radius:22px;padding:22px}.hero-card .big{font-size:2.3rem;font-weight:900;color:var(--lime)}.hero-card p{margin:4px 0}
+main{max-width:1120px;margin:25px auto;padding:0 18px 40px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:18px}.stat,.panel,.spot{background:white;border:1px solid var(--line);border-radius:16px;padding:17px;box-shadow:0 5px 18px #173c2b08}.stat span{display:block;font-size:.85rem;color:var(--muted)}.stat b{font-size:1.65rem}
+.layout{display:grid;grid-template-columns:340px 1fr;gap:17px;align-items:start}.panel h2{margin:0 0 5px}.sub{font-size:.9rem;line-height:1.5;color:var(--muted);margin:0 0 15px}
+label{display:block;font-size:.84rem;font-weight:750;margin:11px 0 5px}input,select,textarea{width:100%;border:1px solid #cedbcf;border-radius:10px;padding:11px 12px;font:inherit;color:var(--ink);background:#fff}textarea{min-height:72px;resize:vertical}
+button{border:0;border-radius:10px;padding:11px 13px;font:inherit;font-weight:800;cursor:pointer}.primary{background:var(--forest);color:white}.secondary{background:#e6f3e9;color:var(--forest)}.danger{background:#fff0e7;color:#9b4c1b}.full{width:100%;margin-top:14px}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:13px}.toolbar input{flex:1;min-width:150px}.toolbar select{width:auto;min-width:130px}.spots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.spot h3{margin:10px 0 7px;font-size:1.05rem}.spot p{font-size:.9rem;line-height:1.45;color:var(--muted);margin:6px 0}.badge{display:inline-block;padding:5px 8px;border-radius:99px;font-size:.72rem;font-weight:900;background:#e1f5e7;color:#176040}.badge.hot{background:#fff0e1;color:#a64d15}.badge.mid{background:#fff6d9;color:#7a6416}.meta{font-size:.82rem;color:#68786f}.actions{display:flex;gap:8px;margin-top:12px}.actions button{font-size:.8rem;padding:8px 10px}.empty{grid-column:1/-1;text-align:center;padding:28px;background:white;border:1px dashed #bfcfc1;border-radius:15px;color:var(--muted)}.insight{background:#e8f4e8;border-radius:13px;padding:14px;margin-top:13px;line-height:1.5;font-size:.9rem}.notice{display:none;background:#e4f7e8;color:#145b3d;border-radius:9px;padding:10px;margin-top:10px;font-size:.9rem}.foot{text-align:center;font-size:.8rem;color:var(--muted);margin-top:23px}
+@media(max-width:820px){.hero{grid-template-columns:1fr}.hero-card{display:none}.layout{grid-template-columns:1fr}.spots{grid-template-columns:1fr}.stats{gap:8px}.stat{padding:12px}.stat b{font-size:1.3rem}}
+</style></head>
+<body>
+<header><div class="brand">🌿 Cool<span>Campus</span></div><section class="hero"><div><div class="eyebrow">NOTICE THE HEAT. FIND THE SHADE.</div><h1>Make every<br>walk a little cooler.</h1><p>A student-led environmental tool to record hot and shaded spots around campus. Compare surfaces, shade, and observations to identify places that may benefit from trees, shade structures, or greener design.</p></div><div class="hero-card"><div class="big" id="heroCount">0</div><p>campus observations</p><hr style="border-color:#ffffff30;margin:17px 0"><p>☀️ Record heat conditions</p><p>🌳 Compare shade and surfaces</p><p>📍 Prioritize greener improvements</p></div></section></header>
+<main><div class="stats"><div class="stat"><span>Recorded locations</span><b id="count">0</b></div><div class="stat"><span>High-heat observations</span><b id="hotCount">0</b></div><div class="stat"><span>Locations with shade</span><b id="shadeCount">0</b></div></div>
+<div class="layout"><section class="panel"><h2>Add an observation</h2><p class="sub">Record what you observe. If you enter temperature, use a thermometer and note the time; do not guess values.</p>
+<form id="form"><label for="place">Location name</label><input id="place" required maxlength="60" placeholder="e.g., Main gate walkway">
+<label for="surface">Ground surface</label><select id="surface"><option>Concrete</option><option>Asphalt</option><option>Grass / soil</option><option>Tiles / pavers</option><option>Mixed</option></select>
+<label for="shade">Shade level</label><select id="shade"><option value="0">No shade</option><option value="1">Partial shade</option><option value="2">Mostly shaded</option></select>
+<label for="heat">Observed heat level</label><select id="heat"><option value="1">Low</option><option value="2" selected>Moderate</option><option value="3">High</option></select>
+<label for="temp">Measured temperature °C (optional)</label><input id="temp" type="number" min="-10" max="70" step="0.1" placeholder="Only if measured">
+<label for="time">Time of observation</label><select id="time"><option>Morning</option><option>Midday</option><option>Afternoon</option><option>Evening</option></select>
+<label for="notes">Notes / suggested improvement</label><textarea id="notes" maxlength="220" placeholder="e.g., Little shade; consider a tree or shade canopy"></textarea>
+<button class="primary full" type="submit">Save observation</button><div class="notice" id="notice" role="status"></div></form>
+<button class="secondary full" id="reset" type="button">Reset sample observations</button></section>
+<section><div class="toolbar"><input id="search" placeholder="Search location or notes…" aria-label="Search observations"><select id="heatFilter"><option value="all">All heat levels</option><option value="3">High heat</option><option value="2">Moderate</option><option value="1">Low</option></select><select id="shadeFilter"><option value="all">All shade levels</option><option value="0">No shade</option><option value="1">Partial shade</option><option value="2">Mostly shaded</option></select></div>
+<div id="spots" class="spots"></div><div class="insight" id="insight"></div></section></div>
+<div class="foot">CoolCampus environmental mini-project prototype • Observations are user-entered demo data • Not a scientific heat-risk forecast</div></main>
+<script>
+const KEY='coolcampus-observations-v1';
+const seed=[
+{id:1,place:'Main gate walkway',surface:'Concrete',shade:0,heat:3,temp:'',time:'Midday',notes:'Exposed walkway; investigate a shade canopy or suitable trees.'},
+{id:2,place:'Library garden path',surface:'Grass / soil',shade:2,heat:1,temp:'',time:'Morning',notes:'Existing trees provide shade; protect the planted area.'},
+{id:3,place:'Parking-side pavement',surface:'Asphalt',shade:0,heat:3,temp:'',time:'Afternoon',notes:'Large exposed paved area; consider shade and more planting.'},
+{id:4,place:'Canteen courtyard',surface:'Tiles / pavers',shade:1,heat:2,temp:'',time:'Midday',notes:'Some shade available; add seating under shade if feasible.'}
+];
+let data=load();
+function load(){try{let s=localStorage.getItem(KEY);return s?JSON.parse(s):seed.slice()}catch(e){return seed.slice()}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function heatName(h){return h==3?'High':h==2?'Moderate':'Low'}
+function shadeName(s){return s==2?'Mostly shaded':s==1?'Partial shade':'No shade'}
+function render(){let q=document.getElementById('search').value.toLowerCase().trim(),hf=document.getElementById('heatFilter').value,sf=document.getElementById('shadeFilter').value;
+let filtered=data.filter(x=>(!q||(x.place+' '+x.notes+' '+x.surface).toLowerCase().includes(q))&&(hf==='all'||String(x.heat)===hf)&&(sf==='all'||String(x.shade)===sf));
+document.getElementById('spots').innerHTML=filtered.length?filtered.slice().reverse().map(x=>`<article class="spot"><div style="display:flex;justify-content:space-between;gap:7px;align-items:center"><span class="badge ${x.heat==3?'hot':x.heat==2?'mid':''}">${heatName(x.heat)} heat</span><span class="meta">${esc(x.time)}</span></div><h3>📍 ${esc(x.place)}</h3><p>${esc(x.notes||'No additional notes.')}</p><p><b>Surface:</b> ${esc(x.surface)}<br><b>Shade:</b> ${shadeName(x.shade)}${x.temp!==''?`<br><b>Measured:</b> ${esc(x.temp)} °C`:''}</p><div class="actions"><button class="secondary" onclick="recommend(${x.id})">View suggestion</button><button class="danger" onclick="removeItem(${x.id})">Remove</button></div></article>`).join(''):'<div class="empty">No observations match. Try changing the filters or add a new location.</div>';
+document.getElementById('count').textContent=data.length;document.getElementById('heroCount').textContent=data.length;document.getElementById('hotCount').textContent=data.filter(x=>x.heat==3).length;document.getElementById('shadeCount').textContent=data.filter(x=>x.shade>0).length;
+const priorities=data.filter(x=>x.heat==3&&x.shade==0).map(x=>x.place);document.getElementById('insight').innerHTML='<b>Environmental insight</b><br>'+(priorities.length?'High-heat locations with no shade to review first: '+priorities.map(esc).join(', ')+'. These are observational priorities, not measured heat-risk classifications.':'No high-heat/no-shade entries are currently recorded. Continue observing at different times of day to build a useful comparison.');
+}
+function recommend(id){const x=data.find(a=>a.id===id);if(!x)return;let suggestion=x.heat==3&&x.shade==0?'Priority for review: investigate suitable shade trees, a shade canopy, and permeable/green surfaces where feasible.':x.shade==2?'Protect existing shade and avoid unnecessary removal of trees.':x.heat==2&&x.shade<2?'Consider more shade, seating away from exposed pavement, or planting where site conditions allow.':'Continue observing at a comparable time and record conditions consistently.';document.getElementById('insight').innerHTML='<b>Suggestion for '+esc(x.place)+'</b><br>'+suggestion+'<br><span class="meta">Confirm feasibility with campus management and suitable local guidance.</span>'}
+function removeItem(id){data=data.filter(x=>x.id!==id);save();render()}
+document.getElementById('form').addEventListener('submit',e=>{e.preventDefault();let t=document.getElementById('temp').value;let item={id:Date.now(),place:document.getElementById('place').value.trim(),surface:document.getElementById('surface').value,shade:Number(document.getElementById('shade').value),heat:Number(document.getElementById('heat').value),temp:t===''?'':Number(t),time:document.getElementById('time').value,notes:document.getElementById('notes').value.trim()};if(!item.place)return;data.push(item);save();render();e.target.reset();document.getElementById('heat').value='2';let n=document.getElementById('notice');n.textContent='Observation saved in this browser. Use real measurements only.';n.style.display='block';setTimeout(()=>n.style.display='none',3200)});
+['search','heatFilter','shadeFilter'].forEach(id=>document.getElementById(id).addEventListener(id==='search'?'input':'change',render));
+document.getElementById('reset').addEventListener('click',()=>{if(confirm('Reset observations to the sample set?')){data=seed.slice();save();render()}});
+render();
+</script></body></html>
